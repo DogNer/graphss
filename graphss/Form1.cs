@@ -73,105 +73,6 @@ namespace graphss
         }
 
 
-        private void draw_vertex2(object sender, MouseEventArgs e)
-        {
-            if (e.X < 250) return;
-            pos obj;
-            obj.point = e.Location;
-            if (list.Count == 0) obj.cnt = 0;
-            else obj.cnt = list[list.Count - 1].cnt + 1;
-
-            
-            if (e.Button == MouseButtons.Left)
-            {
-                if (!inList(obj.point.X, obj.point.Y))
-                {
-                    list.Add(obj);
-                    draw_vertex(e.X, e.Y, list.Count);
-                    matrix[obj.cnt, 0] = obj.cnt + 1;
-                }
-                else if (inList(obj.point.X, obj.point.Y) && isWeighted.Checked == true)
-                {
-                    //CustomDialog d = new CustomDialog(matrix, PointinList(obj).cnt, list.Count);
-                    using (var frm = new CustomDialog(matrix, PointinList(obj).cnt, list.Count, isOrien.Checked))
-                    {
-                        frm.ShowDialog();
-                    }
-                    //d.ShowDialog();
-                }
-            }
-            else if (e.Button == MouseButtons.Right)
-            {
-                AllocConsole();
-                if (inList(obj.point.X, obj.point.Y) && checkBox1.Checked != true && checkBox2.Checked != true)
-                {
-                    if (cnt_ver == 0)
-                    {
-                        vertex_first = PointinList(obj);
-                        cnt_ver++;
-                    }
-                    else if (!equal(PointinList(obj), vertex_first))
-                    {
-                        pos a;
-                        a = PointinList(obj);
-                        a.cnt = PointinList(obj).cnt;
-                        matrix[vertex_first.cnt, a.cnt + 1] = 1;
-                        if (!isOrien.Checked)
-                            matrix[a.cnt, vertex_first.cnt + 1] = 1;
-                        draw_edge(vertex_first, a, matrix[vertex_first.cnt, a.cnt + 1]);
-                        //output();
-                        cnt_ver = 0;
-                    }
-
-                    
-                    Console.WriteLine(vertex_first.point.X + " " + vertex_first.point.Y);
-                }
-                else if (!inList(obj.point.X, obj.point.Y) && checkBox1.Checked != true && checkBox2.Checked != true)
-                {
-                    pos tmp = new pos();
-                    vertex_first = tmp;
-                    Console.WriteLine(vertex_first.point.X + " " + vertex_first.point.Y);
-                    cnt_ver = 0;
-                }
-                else if (inList(obj.point.X, obj.point.Y) && checkBox1.Checked == true && checkBox2.Checked != true)
-                {
-                    pos indexs = list[posInList(e.X, e.Y)];
-                    trans_ver(indexs);
-                    remove_edge(indexs);
-                    list.RemoveAt(list.Count - 1);
-                    Refresh();
-                    draw_tree();
-                }
-                else if (inList(obj.point.X, obj.point.Y) && checkBox1.Checked != true && checkBox2.Checked == true)
-                {
-                    if (cnt_ver_remove == 0)
-                    {
-                        vertex_first = PointinList(obj);
-                        cnt_ver_remove++;
-                    }
-                    else if (!equal(PointinList(obj), vertex_first))
-                    {
-                        pos a;
-                        a = PointinList(obj);
-                        a.cnt = PointinList(obj).cnt;
-                        matrix[vertex_first.cnt, a.cnt + 1] = 0;
-                        if (!isOrien.Checked)
-                            matrix[a.cnt, vertex_first.cnt + 1] = 0;
-                        Refresh();
-                        draw_tree();
-                        //output();
-                        cnt_ver_remove = 0;
-                    }
-                }
-                else
-                {
-                    pos tmp = new pos();
-                    vertex_first = tmp;
-                }
-            }
-
-        }
-
         public void WriteToFile(List<pos> list)
         {
             string tmpTextFilePath = @"C:\Users\Dana\Desktop\poi.txt";
@@ -184,6 +85,30 @@ namespace graphss
                 {
                     pos tmpEntry = list[i];
                     tmpTextToWrite += tmpEntry.point.X + ";" + tmpEntry.point.Y + ";" + tmpEntry.cnt + ";";
+                }
+                tmpWriter.WriteLine(tmpTextToWrite);
+            }
+            //Now we wrote a text file to you desktop with all Informations
+        }
+
+        public void WriteToFileMas(int[,] arr)
+        {
+            //output(matrix);
+
+            string tmpTextFilePath = @"C:\Users\Dana\Desktop\saveArr.txt";
+            File.WriteAllText(tmpTextFilePath, "");
+
+            using (StreamWriter tmpWriter = new StreamWriter(tmpTextFilePath))
+            {
+                string tmpTextToWrite = String.Empty;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    for (int j = 0; j <= list.Count; j++)
+                    {
+                        if (j == list.Count) tmpTextToWrite += arr[i, j];
+                        else tmpTextToWrite += arr[i, j] + ";";
+                    }
+                    tmpTextToWrite += ".";
                 }
                 tmpWriter.WriteLine(tmpTextToWrite);
             }
@@ -232,15 +157,184 @@ namespace graphss
                     }
                     else
                     {
-                        tmpInput += item;                       
+                        tmpInput += item;
                     }
                 }
             }
 
-            WriteToFile(tmplist2);
             Refresh();
             draw_tree();
 
+        }
+
+        private void output(int[,] arr)
+        {
+            AllocConsole();
+            for (int i = 0; i < list.Count; ++i)
+            {
+                for (int j = 0; j <= list.Count; ++j)
+                    Console.Write(arr[i, j] + " ");
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
+
+        public void ReadFromFileArr()
+        {
+
+            int[,] tmparr = new int[110, 110];
+            tmparr = matrix;
+
+            /*AllocConsole();
+            Console.WriteLine(list.Count);*/
+            clear_matrix(matrix);
+
+
+            string tmpTextFilePath = @"C:\Users\Dana\Desktop\saveArr.txt";
+            using (StreamReader tmpReader = new StreamReader(tmpTextFilePath))
+            {
+                string tmpText = tmpReader.ReadLine();
+                string tmpInput = String.Empty;
+
+                int i = 0;
+                int j = 0;
+
+                foreach (char item in tmpText)
+                {
+                    if (item == ';')
+                    {
+                        matrix[i, j] = Int32.Parse(tmpInput);
+                        j++;
+                        tmpInput = "";
+                    }
+                    else if (item == '.')
+                    {
+                        matrix[i, j] = Int32.Parse(tmpInput);
+                        i++;
+                        j = 0;
+                        tmpInput = "";
+                    }
+                    else
+                    {
+                        tmpInput += item;
+                    }
+                }
+            }
+
+            Refresh();
+            draw_tree();
+        }
+
+        private void draw_vertex2(object sender, MouseEventArgs e)
+        {
+            if (e.X < 250) return;
+            pos obj;
+            obj.point = e.Location;
+            if (list.Count == 0) obj.cnt = 0;
+            else obj.cnt = list[list.Count - 1].cnt + 1;
+
+            
+            if (e.Button == MouseButtons.Left)
+            {
+                if (!inList(obj.point.X, obj.point.Y))
+                {
+                    list.Add(obj);
+                    draw_vertex(e.X, e.Y, list.Count);
+                    matrix[obj.cnt, 0] = obj.cnt + 1;
+                }
+                else if (inList(obj.point.X, obj.point.Y) && isWeighted.Checked == true)
+                {
+                    //CustomDialog d = new CustomDialog(matrix, PointinList(obj).cnt, list.Count);
+                    using (var frm = new CustomDialog(matrix, PointinList(obj).cnt, list.Count, isOrien.Checked))
+                    {
+                        frm.ShowDialog();
+                    }
+                    //d.ShowDialog();
+                }
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                //AllocConsole();
+                if (inList(obj.point.X, obj.point.Y) && checkBox1.Checked != true && checkBox2.Checked != true)
+                {
+                    if (cnt_ver == 0)
+                    {
+                        vertex_first = PointinList(obj);
+                        cnt_ver++;
+                    }
+                    else if (!equal(PointinList(obj), vertex_first))
+                    {
+                        pos a;
+                        a = PointinList(obj);
+                        a.cnt = PointinList(obj).cnt;
+                        matrix[vertex_first.cnt, a.cnt + 1] = 1;
+                        if (!isOrien.Checked)
+                            matrix[a.cnt, vertex_first.cnt + 1] = 1;
+                        draw_edge(vertex_first, a, matrix[vertex_first.cnt, a.cnt + 1]);
+                        //output();
+                        cnt_ver = 0;
+                    }
+
+                    
+                    //Console.WriteLine(vertex_first.point.X + " " + vertex_first.point.Y);
+                }
+                else if (!inList(obj.point.X, obj.point.Y) && checkBox1.Checked != true && checkBox2.Checked != true)
+                {
+                    pos tmp = new pos();
+                    vertex_first = tmp;
+                    //Console.WriteLine(vertex_first.point.X + " " + vertex_first.point.Y);
+                    cnt_ver = 0;
+                }
+                else if (inList(obj.point.X, obj.point.Y) && checkBox1.Checked == true && checkBox2.Checked != true)
+                {
+                    pos indexs = list[posInList(e.X, e.Y)];
+                    trans_ver(indexs);
+                    remove_edge(indexs);
+                    list.RemoveAt(list.Count - 1);
+                    Refresh();
+                    draw_tree();
+                }
+                else if (inList(obj.point.X, obj.point.Y) && checkBox1.Checked != true && checkBox2.Checked == true)
+                {
+                    if (cnt_ver_remove == 0)
+                    {
+                        vertex_first = PointinList(obj);
+                        cnt_ver_remove++;
+                    }
+                    else if (!equal(PointinList(obj), vertex_first))
+                    {
+                        pos a;
+                        a = PointinList(obj);
+                        a.cnt = PointinList(obj).cnt;
+                        matrix[vertex_first.cnt, a.cnt + 1] = 0;
+                        if (!isOrien.Checked)
+                            matrix[a.cnt, vertex_first.cnt + 1] = 0;
+                        Refresh();
+                        draw_tree();
+                        //output();
+                        cnt_ver_remove = 0;
+                    }
+                }
+                else
+                {
+                    pos tmp = new pos();
+                    vertex_first = tmp;
+                }
+            }
+
+        }
+
+        
+
+        public void clear_matrix(int[,] matrix)
+        {
+            for (int i = 0; i <= list.Count; i++)
+            {
+                for (int j = 0; j <= list.Count; j++)
+                {
+                    matrix[i, j] = 0;
+                }
+            }
         }
 
         /*public bool is_on_line(Point start, Point end, Point point)
@@ -294,17 +388,7 @@ namespace graphss
             return false;
         }
 
-        private void output()
-        {
-            AllocConsole();
-            for (int i = 0; i < list.Count; ++i)
-            {
-                for (int j = 0; j < list.Count + 1; ++j)
-                    Console.Write(matrix[i, j] + " ");
-                Console.WriteLine();
-            }
-            Console.WriteLine();
-        }
+        
 
         private bool inList(int x, int y)
         {
@@ -460,11 +544,17 @@ namespace graphss
         private void button3_Click(object sender, EventArgs e)
         {
             WriteToFile(list);
+            WriteToFileMas(matrix);
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
+            
+
+            ReadFromFileArr();
+
             ReadFromFile();
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
