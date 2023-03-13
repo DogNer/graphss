@@ -80,6 +80,7 @@ namespace graphss
             Button btn_close = new Button();
             btn_close.Name = "close";
             btn_close.Location = new Point(20, 30 * count_ver + 5);
+            btn_close.Text = "Застосувати";
             Controls.Add(btn_close);
             btn_close.Click += new System.EventHandler(this.close_Clicked);
 

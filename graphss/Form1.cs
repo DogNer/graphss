@@ -20,18 +20,12 @@ namespace graphss
 
 
         public int[,] matrix = new int[110, 110];
-        Graphics graphic;
-        GraphicsPath path;
         public bool ck = false;
         public object currObject;
 
         private Point MouseDownLocation;
 
-        private ArrayList myPts = new ArrayList();
-        private Bitmap img = null;
-
         int position = -1;
-        int x = 0, y = 0;
 
         public bool check = true;
         public int lenght_arr = 0;
@@ -45,13 +39,13 @@ namespace graphss
         public Color color_ver = Color.Black;
         public Color color_edges = Color.Red;
 
-        pos iln;
-
         [DllImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
 
-        TransferData state;
+
+        private List<int> visited_ver;
+        private Stack<int> stack_ver;
 
         public int[,] arrays
         {
@@ -68,161 +62,50 @@ namespace graphss
         public Form1()
         {
             list = new List<pos>();
+            visited_ver = new List<int>();
+            stack_ver = new Stack<int>();
             
             InitializeComponent();
         }
 
-
-        public void WriteToFile(List<pos> list)
+        public void dfs(int ver_ind)
         {
-            string tmpTextFilePath = @"C:\Users\Dana\Desktop\poi.txt";
-            File.WriteAllText(tmpTextFilePath, "");
-
-            using (StreamWriter tmpWriter = new StreamWriter(tmpTextFilePath))
-            {
-                string tmpTextToWrite = String.Empty;
-                for (int i = 0; i < list.Count; i++)
+            bool check = true;
+            visited_ver.Add(ver_ind);
+            
+            for (int i = list.Count; i >= 1; i--){
+                if (matrix[ver_ind, i] != 0 && in_not_list_of_visited(i - 1))
                 {
-                    pos tmpEntry = list[i];
-                    tmpTextToWrite += tmpEntry.point.X + ";" + tmpEntry.point.Y + ";" + tmpEntry.cnt + ";";
-                }
-                tmpWriter.WriteLine(tmpTextToWrite);
-            }
-            //Now we wrote a text file to you desktop with all Informations
-        }
-
-        public void WriteToFileMas(int[,] arr)
-        {
-            //output(matrix);
-
-            string tmpTextFilePath = @"C:\Users\Dana\Desktop\saveArr.txt";
-            File.WriteAllText(tmpTextFilePath, "");
-
-            using (StreamWriter tmpWriter = new StreamWriter(tmpTextFilePath))
-            {
-                string tmpTextToWrite = String.Empty;
-                for (int i = 0; i < list.Count; i++)
-                {
-                    for (int j = 0; j <= list.Count; j++)
-                    {
-                        if (j == list.Count) tmpTextToWrite += arr[i, j];
-                        else tmpTextToWrite += arr[i, j] + ";";
-                    }
-                    tmpTextToWrite += ".";
-                }
-                tmpWriter.WriteLine(tmpTextToWrite);
-            }
-            //Now we wrote a text file to you desktop with all Informations
-        }
-
-        public void ReadFromFile()
-        {
-            //AllocConsole();
-            List<pos> tmplist = new List<pos>();
-            List<pos> tmplist2 = new List<pos>();
-            tmplist2 = list;
-            list = tmplist;
-
-            string tmpTextFilePath = @"C:\Users\Dana\Desktop\poi.txt";
-            using (StreamReader tmpReader = new StreamReader(tmpTextFilePath))
-            {
-                string tmpText = tmpReader.ReadLine();
-                string tmpInput = String.Empty;
-                pos tmp = new pos();
-                int i = 0;
-                foreach (char item in tmpText)
-                {
-                    if (item == ';')
-                    {
-                        if (i == 0)
-                        {
-                            tmp.point.X = Int32.Parse(tmpInput);
-                            i++;
-                            tmpInput = "";
-                        }
-                        else if (i == 1)
-                        {
-                            tmp.point.Y = Int32.Parse(tmpInput);
-                            i++;
-                            tmpInput = "";
-                        }
-                        else
-                        {
-                            i = 0;
-                            tmp.cnt = Int32.Parse(tmpInput);
-                            tmpInput = String.Empty;
-                            list.Add(tmp);
-                            //Console.WriteLine(tmp.point.X + " " + tmp.point.Y);
-                        }
-                    }
-                    else
-                    {
-                        tmpInput += item;
-                    }
+                    stack_ver.Push(i - 1);
+                    check = false;
                 }
             }
+            if (check)
+                visited_ver.Add(-1);
+            if (stack_ver.Count <= 0) return;
 
-            Refresh();
-            draw_tree();
-
+            int index = stack_ver.Peek();
+            stack_ver.Pop();
+            dfs(index);
         }
 
-        private void output(int[,] arr)
+        private void button5_Click(object sender, EventArgs e)
         {
             AllocConsole();
-            for (int i = 0; i < list.Count; ++i)
+            //output(matrix);
+            dfs(0);
+
+            for (int i = 0; i < visited_ver.Count; ++i) 
             {
-                for (int j = 0; j <= list.Count; ++j)
-                    Console.Write(arr[i, j] + " ");
-                Console.WriteLine();
+                Console.Write(visited_ver[i] + 1 + " ");
             }
-            Console.WriteLine();
         }
 
-        public void ReadFromFileArr()
+        private bool in_not_list_of_visited(int ver_ind)
         {
-
-            int[,] tmparr = new int[110, 110];
-            tmparr = matrix;
-
-            /*AllocConsole();
-            Console.WriteLine(list.Count);*/
-            clear_matrix(matrix);
-
-
-            string tmpTextFilePath = @"C:\Users\Dana\Desktop\saveArr.txt";
-            using (StreamReader tmpReader = new StreamReader(tmpTextFilePath))
-            {
-                string tmpText = tmpReader.ReadLine();
-                string tmpInput = String.Empty;
-
-                int i = 0;
-                int j = 0;
-
-                foreach (char item in tmpText)
-                {
-                    if (item == ';')
-                    {
-                        matrix[i, j] = Int32.Parse(tmpInput);
-                        j++;
-                        tmpInput = "";
-                    }
-                    else if (item == '.')
-                    {
-                        matrix[i, j] = Int32.Parse(tmpInput);
-                        i++;
-                        j = 0;
-                        tmpInput = "";
-                    }
-                    else
-                    {
-                        tmpInput += item;
-                    }
-                }
-            }
-
-            Refresh();
-            draw_tree();
+            for (int i = 0; i < visited_ver.Count; ++i)
+                if (ver_ind == visited_ver[i]) return false;
+            return true;
         }
 
         private void draw_vertex2(object sender, MouseEventArgs e)
@@ -233,7 +116,7 @@ namespace graphss
             if (list.Count == 0) obj.cnt = 0;
             else obj.cnt = list[list.Count - 1].cnt + 1;
 
-            
+
             if (e.Button == MouseButtons.Left)
             {
                 if (!inList(obj.point.X, obj.point.Y))
@@ -275,7 +158,7 @@ namespace graphss
                         cnt_ver = 0;
                     }
 
-                    
+
                     //Console.WriteLine(vertex_first.point.X + " " + vertex_first.point.Y);
                 }
                 else if (!inList(obj.point.X, obj.point.Y) && checkBox1.Checked != true && checkBox2.Checked != true)
@@ -324,7 +207,154 @@ namespace graphss
 
         }
 
-        
+        public void WriteToFile(List<pos> list)
+        {
+            string tmpTextFilePath = @"C:\Users\Dana\Documents\inf\poi.txt";
+            File.WriteAllText(tmpTextFilePath, "");
+
+            using (StreamWriter tmpWriter = new StreamWriter(tmpTextFilePath))
+            {
+                string tmpTextToWrite = String.Empty;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    pos tmpEntry = list[i];
+                    tmpTextToWrite += tmpEntry.point.X + ";" + tmpEntry.point.Y + ";" + tmpEntry.cnt + ";";
+                }
+                tmpWriter.WriteLine(tmpTextToWrite);
+            }
+        }
+
+        public void WriteToFileMas(int[,] arr)
+        {
+            //output(matrix);
+
+            string tmpTextFilePath = @"C:\Users\Dana\Documents\inf\saveArr.txt";
+            File.WriteAllText(tmpTextFilePath, "");
+
+            using (StreamWriter tmpWriter = new StreamWriter(tmpTextFilePath))
+            {
+                string tmpTextToWrite = String.Empty;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    for (int j = 0; j <= list.Count; j++)
+                    {
+                        if (j == list.Count) tmpTextToWrite += arr[i, j];
+                        else tmpTextToWrite += arr[i, j] + ";";
+                    }
+                    tmpTextToWrite += ".";
+                }
+                tmpWriter.WriteLine(tmpTextToWrite);
+            }
+        }
+
+        public void ReadFromFile()
+        {
+            //AllocConsole();
+            List<pos> tmplist = new List<pos>();
+            List<pos> tmplist2 = new List<pos>();
+            tmplist2 = list;
+            list = tmplist;
+
+            string tmpTextFilePath = @"C:\Users\Dana\Documents\inf\poi.txt";
+            using (StreamReader tmpReader = new StreamReader(tmpTextFilePath))
+            {
+                string tmpText = tmpReader.ReadLine();
+                string tmpInput = String.Empty;
+                pos tmp = new pos();
+                int i = 0;
+                foreach (char item in tmpText)
+                {
+                    if (item == ';')
+                    {
+                        if (i == 0)
+                        {
+                            tmp.point.X = Int32.Parse(tmpInput);
+                            i++;
+                            tmpInput = "";
+                        }
+                        else if (i == 1)
+                        {
+                            tmp.point.Y = Int32.Parse(tmpInput);
+                            i++;
+                            tmpInput = "";
+                        }
+                        else
+                        {
+                            i = 0;
+                            tmp.cnt = Int32.Parse(tmpInput);
+                            tmpInput = String.Empty;
+                            list.Add(tmp);
+                        }
+                    }
+                    else
+                    {
+                        tmpInput += item;
+                    }
+                }
+            }
+
+            Refresh();
+            draw_tree();
+
+        }
+
+        private void output(int[,] arr)
+        {
+            AllocConsole();
+            for (int i = 0; i < list.Count; ++i)
+            {
+                for (int j = 0; j <= list.Count; ++j)
+                    Console.Write(arr[i, j] + " ");
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
+
+        public void ReadFromFileArr()
+        {
+
+            int[,] tmparr = new int[110, 110];
+            tmparr = matrix;
+
+            /*AllocConsole();
+            Console.WriteLine(list.Count);*/
+            clear_matrix(matrix);
+
+
+            string tmpTextFilePath = @"C:\Users\Dana\Documents\inf\saveArr.txt";
+            using (StreamReader tmpReader = new StreamReader(tmpTextFilePath))
+            {
+                string tmpText = tmpReader.ReadLine();
+                string tmpInput = String.Empty;
+
+                int i = 0;
+                int j = 0;
+
+                foreach (char item in tmpText)
+                {
+                    if (item == ';')
+                    {
+                        matrix[i, j] = Int32.Parse(tmpInput);
+                        j++;
+                        tmpInput = "";
+                    }
+                    else if (item == '.')
+                    {
+                        matrix[i, j] = Int32.Parse(tmpInput);
+                        i++;
+                        j = 0;
+                        tmpInput = "";
+                    }
+                    else
+                    {
+                        tmpInput += item;
+                    }
+                }
+            }
+
+            Refresh();
+            draw_tree();
+        }
 
         public void clear_matrix(int[,] matrix)
         {
@@ -337,19 +367,6 @@ namespace graphss
             }
         }
 
-        /*public bool is_on_line(Point start, Point end, Point point)
-        {
-            double k, c;
-            if (end.X == start.X)
-            {
-                return (point.X == start.X && point.Y >= Math.Min(start.Y, end.Y) && point.X <= Math.Max(start.Y, start.Y));
-            }
-
-            k = (end.Y - start.Y) / (end.X - start.X);
-            c = start.Y - k * start.X;
-
-            return point.Y == point.X * k + c;
-        }*/
 
         private void remove_edge(pos vertex) {
             for (int i = 1; i < list.Count + 1; i++)
@@ -388,13 +405,11 @@ namespace graphss
             return false;
         }
 
-        
-
         private bool inList(int x, int y)
         {
             for (int i = 0; i < list.Count; i++)
             {
-                if (Math.Pow(list[i].point.X - x, 2) + Math.Pow(list[i].point.Y - y, 2) <= radius * radius) return true;
+                if ((Math.Pow(list[i].point.X - x, 2) + Math.Pow(list[i].point.Y - y, 2) <= radius * radius) && i != position) return true;
             }
             return false;
         }
@@ -424,11 +439,13 @@ namespace graphss
         {
             if (e.Button == MouseButtons.Middle && check)
             {
-                relpaceLoc(e.X, e.Y);
-                MouseDownLocation.X = list[posInList(e.X, e.Y)].point.X;
-                MouseDownLocation.Y = list[posInList(e.X, e.Y)].point.Y;
+                if (!inList(e.X, e.Y))
+                {
+                    relpaceLoc(e.X, e.Y);
+                    MouseDownLocation.X = list[posInList(e.X, e.Y)].point.X;
+                    MouseDownLocation.Y = list[posInList(e.X, e.Y)].point.Y;
+                } 
             }
-
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -549,10 +566,7 @@ namespace graphss
 
         private void button4_Click(object sender, EventArgs e)
         {
-            
-
             ReadFromFileArr();
-
             ReadFromFile();
 
         }
@@ -563,6 +577,18 @@ namespace graphss
             {
                 ReadFromFile();
             }*/
+        }
+
+        private void isOrien_Click(object sender, EventArgs e)
+        {
+            clear_matrix(matrix);
+            Refresh();
+            draw_tree();
+        }
+
+        private void Form1_MouseUp(object sender, MouseEventArgs e)
+        {
+            position = -1;
         }
 
         private void textBox1_KeyUp(object sender, KeyEventArgs e)
@@ -604,12 +630,14 @@ namespace graphss
         }
     }
 
+
     public struct pos
     {
         public Point point;
         public int cnt;
 
-        public pos() {
+        public pos()
+        {
             point.X = 0;
             point.Y = 0;
             cnt = 0;
