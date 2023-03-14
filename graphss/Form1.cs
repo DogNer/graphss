@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static System.Windows.Forms.DataFormats;
+using Timer = System.Windows.Forms.Timer;
 
 namespace graphss
 {
@@ -34,10 +36,13 @@ namespace graphss
         public pos vertex_first;
 
         string theText;
-        public int radius = 40;
+        public int radius;
 
-        public Color color_ver = Color.Black;
-        public Color color_edges = Color.Red;
+        public Color color_ver;
+        public Color color_edges;
+
+        public Color temp_color_ver;
+        public Color temp_color_edges;
 
         [DllImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -59,29 +64,29 @@ namespace graphss
             }
         }
 
+        public int counter = 0;
+        Timer t;
+
         public Form1()
         {
             list = new List<pos>();
-            visited_ver = new List<int>();
-            stack_ver = new Stack<int>();
-            
+
+            color_ver = Color.Black;
+            color_edges = Color.Red;
+            ReadFromFileSize();
+
             InitializeComponent();
         }
 
+
         public void dfs(int ver_ind)
         {
-            bool check = true;
             visited_ver.Add(ver_ind);
             
-            for (int i = list.Count; i >= 1; i--){
+            for (int i = list.Count; i >= 1; i--)
                 if (matrix[ver_ind, i] != 0 && in_not_list_of_visited(i - 1))
-                {
                     stack_ver.Push(i - 1);
-                    check = false;
-                }
-            }
-            if (check)
-                visited_ver.Add(-1);
+
             if (stack_ver.Count <= 0) return;
 
             int index = stack_ver.Peek();
@@ -91,14 +96,18 @@ namespace graphss
 
         private void button5_Click(object sender, EventArgs e)
         {
-            AllocConsole();
-            //output(matrix);
+            visited_ver = new List<int>();
+            stack_ver = new Stack<int>();
             dfs(0);
 
-            for (int i = 0; i < visited_ver.Count; ++i) 
-            {
-                Console.Write(visited_ver[i] + 1 + " ");
-            }
+            temp_color_ver = color_ver;
+            temp_color_edges = color_edges;
+
+            t = new Timer();
+            counter = 0;
+            t.Interval = 750;
+            t.Tick += new EventHandler(timer1_Tick);
+            t.Start();
         }
 
         private bool in_not_list_of_visited(int ver_ind)
@@ -106,6 +115,25 @@ namespace graphss
             for (int i = 0; i < visited_ver.Count; ++i)
                 if (ver_ind == visited_ver[i]) return false;
             return true;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (counter < visited_ver.Count)
+            {
+                color_ver = Color.Olive;
+                draw_vertex(list[visited_ver[counter]].point.X, list[visited_ver[counter]].point.Y, visited_ver[counter] + 1);
+                counter++;
+            }
+            else
+            {
+                Refresh();
+                color_edges = temp_color_edges;
+                color_ver = temp_color_ver;
+                draw_tree();
+                t.Stop();
+                
+            }
         }
 
         private void draw_vertex2(object sender, MouseEventArgs e)
@@ -296,6 +324,22 @@ namespace graphss
             Refresh();
             draw_tree();
 
+        }
+
+        public void ReadFromFileSize()
+        {
+            string tmpTextFilePath = @"C:\Users\Dana\Documents\inf\size_ver.txt";
+            using (StreamReader tmpReader = new StreamReader(tmpTextFilePath))
+            {
+                string tmpText = tmpReader.ReadLine();
+                string tmpInput = String.Empty;
+                foreach (char item in tmpText)
+                {
+                    tmpInput += item;
+                }
+
+                radius = Int32.Parse(tmpInput);
+            }
         }
 
         private void output(int[,] arr)
@@ -519,13 +563,13 @@ namespace graphss
 
         private void button1_Click(object sender, EventArgs e)
         {
-            int n;
+            /*int n;
             if (int.TryParse(theText, out n))
             {
                 radius = n;
                 Refresh();
                 draw_tree();
-            }
+            }*/
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -538,45 +582,6 @@ namespace graphss
         {
             Refresh();
             draw_tree();
-        }
-
-        private void choose_color_Click(object sender, EventArgs e)
-        {
-            ColorDialog cd = new ColorDialog();
-            cd.ShowDialog();
-            color_ver = cd.Color;
-            Refresh();
-            draw_tree();
-        }
-
-        private void color_edge_Click(object sender, EventArgs e)
-        {
-            ColorDialog cd = new ColorDialog();
-            cd.ShowDialog();
-            color_edges = cd.Color;
-            Refresh();
-            draw_tree();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            WriteToFile(list);
-            WriteToFileMas(matrix);
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            ReadFromFileArr();
-            ReadFromFile();
-
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            /*if (File.ReadAllLines(@"C:\Users\Dana\Desktop\poi.txt").Length > 0)
-            {
-                ReadFromFile();
-            }*/
         }
 
         private void isOrien_Click(object sender, EventArgs e)
@@ -595,6 +600,48 @@ namespace graphss
         {
             TextBox objTextBox = (TextBox)sender;
             theText = objTextBox.Text;
+        }
+
+        private void vertexToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            ColorDialog cd = new ColorDialog();
+            cd.ShowDialog();
+            color_ver = cd.Color;
+            Refresh();
+            draw_tree();
+        }
+
+        private void edgeToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            ColorDialog cd = new ColorDialog();
+            cd.ShowDialog();
+            color_edges = cd.Color;
+            Refresh();
+            draw_tree();
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WriteToFile(list);
+            WriteToFileMas(matrix);
+        }
+
+        private void previousToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ReadFromFileArr();
+            ReadFromFile();
+        }
+
+        private void sizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var frm2 = new DialogSize())
+            {
+                frm2.ShowDialog();
+            }
+
+            ReadFromFileSize();
+            Refresh();
+            draw_tree();
         }
 
         private void draw_tree()
