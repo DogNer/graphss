@@ -29,140 +29,37 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.isOrien = new System.Windows.Forms.CheckBox();
-            this.isWeighted = new System.Windows.Forms.CheckBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.klkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.mainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vertexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.edgeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.previousToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.previousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.otherToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteverMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteedgMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.orientedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.weightMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.functionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dfsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.eulerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.вершиниToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ребраToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.fontDialog1 = new System.Windows.Forms.FontDialog();
+            this.label1 = new System.Windows.Forms.Label();
+            this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(121)))), ((int)(((byte)(126)))));
-            this.checkBox1.Font = new System.Drawing.Font("Sitka Display", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.checkBox1.Location = new System.Drawing.Point(12, 113);
-            this.checkBox1.MaximumSize = new System.Drawing.Size(200, 0);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(190, 32);
-            this.checkBox1.TabIndex = 1;
-            this.checkBox1.Text = "Видалити вершину";
-            this.checkBox1.UseVisualStyleBackColor = false;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(12, 65);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 23);
-            this.textBox1.TabIndex = 4;
-            this.textBox1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyUp);
-            // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(141, 65);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Застосувати";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(121)))), ((int)(((byte)(126)))));
-            this.checkBox2.Font = new System.Drawing.Font("Sitka Display", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.checkBox2.Location = new System.Drawing.Point(12, 166);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(164, 32);
-            this.checkBox2.TabIndex = 7;
-            this.checkBox2.Text = "Видалити ребро";
-            this.checkBox2.UseVisualStyleBackColor = false;
-            // 
-            // isOrien
-            // 
-            this.isOrien.AutoSize = true;
-            this.isOrien.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(121)))), ((int)(((byte)(126)))));
-            this.isOrien.Font = new System.Drawing.Font("Sitka Display", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.isOrien.Location = new System.Drawing.Point(12, 218);
-            this.isOrien.Name = "isOrien";
-            this.isOrien.Size = new System.Drawing.Size(144, 32);
-            this.isOrien.TabIndex = 10;
-            this.isOrien.Text = "Орієнтований";
-            this.isOrien.UseVisualStyleBackColor = false;
-            this.isOrien.Click += new System.EventHandler(this.isOrien_Click);
-            // 
-            // isWeighted
-            // 
-            this.isWeighted.AutoSize = true;
-            this.isWeighted.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(121)))), ((int)(((byte)(126)))));
-            this.isWeighted.Font = new System.Drawing.Font("Sitka Display", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.isWeighted.Location = new System.Drawing.Point(12, 269);
-            this.isWeighted.Name = "isWeighted";
-            this.isWeighted.Size = new System.Drawing.Size(112, 32);
-            this.isWeighted.TabIndex = 11;
-            this.isWeighted.Text = "Зважений";
-            this.isWeighted.UseVisualStyleBackColor = false;
-            this.isWeighted.Click += new System.EventHandler(this.isWeighted_Click);
-            // 
-            // button2
-            // 
-            this.button2.BackColor = System.Drawing.SystemColors.Window;
-            this.button2.Location = new System.Drawing.Point(12, 325);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 12;
-            this.button2.Text = "Застосувати";
-            this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Violet;
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(-1, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(250, 683);
-            this.pictureBox1.TabIndex = 13;
-            this.pictureBox1.TabStop = false;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(121)))), ((int)(((byte)(126)))));
-            this.label2.Font = new System.Drawing.Font("Sitka Display", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(12, 21);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(131, 28);
-            this.label2.TabIndex = 14;
-            this.label2.Text = "Обрати розмір";
             // 
             // button3
             // 
@@ -180,13 +77,10 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(623, 64);
+            this.button5.Location = new System.Drawing.Point(0, 0);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 21;
-            this.button5.Text = "button5";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.button5.TabIndex = 24;
             // 
             // timer1
             // 
@@ -195,35 +89,26 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.klkToolStripMenuItem,
-            this.toolStripMenuItem1,
-            this.mainToolStripMenuItem});
+            this.mainToolStripMenuItem,
+            this.otherToolStripMenuItem,
+            this.functionToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1064, 24);
             this.menuStrip1.TabIndex = 23;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // klkToolStripMenuItem
-            // 
-            this.klkToolStripMenuItem.Name = "klkToolStripMenuItem";
-            this.klkToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(12, 20);
-            // 
             // mainToolStripMenuItem
             // 
             this.mainToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.colorToolStripMenuItem,
             this.saveToolStripMenuItem,
-            this.previousToolStripMenuItem,
-            this.sizeToolStripMenuItem});
+            this.previousMenuItem,
+            this.sizeToolStripMenuItem,
+            this.clearToolStripMenuItem});
             this.mainToolStripMenuItem.Name = "mainToolStripMenuItem";
-            this.mainToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
-            this.mainToolStripMenuItem.Text = "main";
+            this.mainToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
+            this.mainToolStripMenuItem.Text = "Основне";
             // 
             // colorToolStripMenuItem
             // 
@@ -255,19 +140,89 @@
             this.saveToolStripMenuItem.Text = "Зберегти";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
-            // previousToolStripMenuItem
+            // previousMenuItem
             // 
-            this.previousToolStripMenuItem.Name = "previousToolStripMenuItem";
-            this.previousToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-            this.previousToolStripMenuItem.Text = "Попередній";
-            this.previousToolStripMenuItem.Click += new System.EventHandler(this.previousToolStripMenuItem_Click);
+            this.previousMenuItem.Enabled = false;
+            this.previousMenuItem.Name = "previousMenuItem";
+            this.previousMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.previousMenuItem.Text = "Попередній";
+            this.previousMenuItem.Click += new System.EventHandler(this.previousToolStripMenuItem_Click);
             // 
             // sizeToolStripMenuItem
             // 
             this.sizeToolStripMenuItem.Name = "sizeToolStripMenuItem";
             this.sizeToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-            this.sizeToolStripMenuItem.Text = "Size";
+            this.sizeToolStripMenuItem.Text = "Розмір";
             this.sizeToolStripMenuItem.Click += new System.EventHandler(this.sizeToolStripMenuItem_Click);
+            // 
+            // clearToolStripMenuItem
+            // 
+            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.clearToolStripMenuItem.Text = "Очистити";
+            this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+            // 
+            // otherToolStripMenuItem
+            // 
+            this.otherToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteverMenuItem,
+            this.deleteedgMenuItem,
+            this.orientedMenuItem,
+            this.weightMenuItem});
+            this.otherToolStripMenuItem.Name = "otherToolStripMenuItem";
+            this.otherToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.otherToolStripMenuItem.Text = "Функції";
+            // 
+            // deleteverMenuItem
+            // 
+            this.deleteverMenuItem.Name = "deleteverMenuItem";
+            this.deleteverMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.deleteverMenuItem.Text = "Видалення вершини";
+            this.deleteverMenuItem.Click += new System.EventHandler(this.deleteverToolStripMenuItem_Click);
+            // 
+            // deleteedgMenuItem
+            // 
+            this.deleteedgMenuItem.Name = "deleteedgMenuItem";
+            this.deleteedgMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.deleteedgMenuItem.Text = "Видалення ребра";
+            this.deleteedgMenuItem.Click += new System.EventHandler(this.deleteedgeToolStripMenuItem_Click);
+            // 
+            // orientedMenuItem
+            // 
+            this.orientedMenuItem.Name = "orientedMenuItem";
+            this.orientedMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.orientedMenuItem.Text = "Орієнтований";
+            this.orientedMenuItem.Click += new System.EventHandler(this.orientedToolStripMenuItem_Click);
+            // 
+            // weightMenuItem
+            // 
+            this.weightMenuItem.Name = "weightMenuItem";
+            this.weightMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.weightMenuItem.Text = "Зважений";
+            this.weightMenuItem.Click += new System.EventHandler(this.weightToolStripMenuItem_Click);
+            // 
+            // functionToolStripMenuItem
+            // 
+            this.functionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dfsMenuItem,
+            this.eulerToolStripMenuItem});
+            this.functionToolStripMenuItem.Name = "functionToolStripMenuItem";
+            this.functionToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.functionToolStripMenuItem.Text = "Інще";
+            // 
+            // dfsMenuItem
+            // 
+            this.dfsMenuItem.Name = "dfsMenuItem";
+            this.dfsMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.dfsMenuItem.Text = "Пошук у глибину";
+            this.dfsMenuItem.Click += new System.EventHandler(this.dfsToolStripMenuItem_Click);
+            // 
+            // eulerToolStripMenuItem
+            // 
+            this.eulerToolStripMenuItem.Name = "eulerToolStripMenuItem";
+            this.eulerToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.eulerToolStripMenuItem.Text = "euler";
+            this.eulerToolStripMenuItem.Click += new System.EventHandler(this.eulerToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
@@ -289,31 +244,35 @@
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(565, 243);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(38, 15);
+            this.label1.TabIndex = 26;
+            this.label1.Text = "label1";
+            // 
+            // timer2
+            // 
+            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
+            // 
             // Form1
             // 
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1064, 681);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.isWeighted);
-            this.Controls.Add(this.isOrien);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.pictureBox1);
             this.MaximumSize = new System.Drawing.Size(1080, 720);
-            this.MinimumSize = new System.Drawing.Size(1080, 0);
+            this.MinimumSize = new System.Drawing.Size(1080, 720);
             this.Name = "Form1";
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.draw_vertex2);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -322,23 +281,12 @@
         }
 
         #endregion
-        private CheckBox checkBox1;
-        private TextBox textBox1;
-        private Button button1;
-        private CheckBox checkBox2;
-        private CheckBox isOrien;
-        private CheckBox isWeighted;
-        private Button button2;
-        private PictureBox pictureBox1;
-        private Label label2;
         private ColorDialog colorDialog1;
         private Button button3;
         private Button button4;
         private Button button5;
         private System.Windows.Forms.Timer timer1;
         private MenuStrip menuStrip1;
-        private ToolStripMenuItem klkToolStripMenuItem;
-        private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem toolStripMenuItem2;
         private ToolStripMenuItem deleteToolStripMenuItem;
         private ToolStripMenuItem вершиниToolStripMenuItem;
@@ -348,7 +296,19 @@
         private ToolStripMenuItem vertexToolStripMenuItem;
         private ToolStripMenuItem edgeToolStripMenuItem;
         private ToolStripMenuItem saveToolStripMenuItem;
-        private ToolStripMenuItem previousToolStripMenuItem;
         private ToolStripMenuItem sizeToolStripMenuItem;
+        private ToolStripMenuItem previousMenuItem;
+        private ToolStripMenuItem clearToolStripMenuItem;
+        private ToolStripMenuItem otherToolStripMenuItem;
+        private ToolStripMenuItem deleteverMenuItem;
+        private ToolStripMenuItem deleteedgMenuItem;
+        private ToolStripMenuItem orientedMenuItem;
+        private ToolStripMenuItem weightMenuItem;
+        private ToolStripMenuItem functionToolStripMenuItem;
+        private ToolStripMenuItem dfsMenuItem;
+        private FontDialog fontDialog1;
+        private Label label1;
+        private ToolStripMenuItem eulerToolStripMenuItem;
+        private System.Windows.Forms.Timer timer2;
     }
 }

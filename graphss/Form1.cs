@@ -21,7 +21,7 @@ namespace graphss
         List<pos> list;
 
 
-        public int[,] matrix = new int[110, 110];
+        private int[,] matrix = new int[110, 110];
         public bool ck = false;
         public object currObject;
 
@@ -48,20 +48,32 @@ namespace graphss
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
 
-
+        /*dfs*/
         private List<int> visited_ver;
         private Stack<int> stack_ver;
+        /**/
+
+        /*Euler*/
+        private Stack<int> ver_path;
+        private List<int> ans_path;
+        private int count_edge;
+        /**/
+
+        public bool check_del_ver = false;
+        public bool check_del_edge = false;
+        public bool is_oriented = false;
+        public bool is_weight = false;
+
+        public static Form1 instance;
+        public Label label;
+        public int index_ver_st;
+
+        
 
         public int[,] arrays
         {
-            get
-            {
-                return matrix;
-            }
-            set
-            {
-                matrix = value;
-            }
+            get{return matrix;}
+            set{matrix = value;}
         }
 
         public int counter = 0;
@@ -74,14 +86,15 @@ namespace graphss
             color_ver = Color.Black;
             color_edges = Color.Red;
             ReadFromFileSize();
-
+            
             InitializeComponent();
+            instance = this;
         }
-
 
         public void dfs(int ver_ind)
         {
-            visited_ver.Add(ver_ind);
+            if (in_not_list_of_visited(ver_ind))
+                visited_ver.Add(ver_ind);
             
             for (int i = list.Count; i >= 1; i--)
                 if (matrix[ver_ind, i] != 0 && in_not_list_of_visited(i - 1))
@@ -92,22 +105,6 @@ namespace graphss
             int index = stack_ver.Peek();
             stack_ver.Pop();
             dfs(index);
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            visited_ver = new List<int>();
-            stack_ver = new Stack<int>();
-            dfs(0);
-
-            temp_color_ver = color_ver;
-            temp_color_edges = color_edges;
-
-            t = new Timer();
-            counter = 0;
-            t.Interval = 750;
-            t.Tick += new EventHandler(timer1_Tick);
-            t.Start();
         }
 
         private bool in_not_list_of_visited(int ver_ind)
@@ -121,7 +118,7 @@ namespace graphss
         {
             if (counter < visited_ver.Count)
             {
-                color_ver = Color.Olive;
+                color_ver = Color.SlateGray;
                 draw_vertex(list[visited_ver[counter]].point.X, list[visited_ver[counter]].point.Y, visited_ver[counter] + 1);
                 counter++;
             }
@@ -136,9 +133,27 @@ namespace graphss
             }
         }
 
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            if (count_edge < ans_path.Count - 1)
+            {
+                color_edges = Color.SlateGray;
+                draw_edge(list[ans_path[count_edge]], list[ans_path[count_edge + 1]], 0);
+                count_edge++;
+            }
+            else
+            {
+                Refresh();
+                color_edges = temp_color_edges;
+                color_ver = temp_color_ver;
+                draw_tree();
+                t.Stop();
+            }
+        }
+
         private void draw_vertex2(object sender, MouseEventArgs e)
         {
-            if (e.X < 250) return;
+            if ((e.X < radius || e.Y < radius) || (e.X > 1080 - radius*2 || e.Y > 720 - radius*2)) return;
             pos obj;
             obj.point = e.Location;
             if (list.Count == 0) obj.cnt = 0;
@@ -153,20 +168,20 @@ namespace graphss
                     draw_vertex(e.X, e.Y, list.Count);
                     matrix[obj.cnt, 0] = obj.cnt + 1;
                 }
-                else if (inList(obj.point.X, obj.point.Y) && isWeighted.Checked == true)
+                else if (inList(obj.point.X, obj.point.Y) && is_weight == true)
                 {
-                    //CustomDialog d = new CustomDialog(matrix, PointinList(obj).cnt, list.Count);
-                    using (var frm = new CustomDialog(matrix, PointinList(obj).cnt, list.Count, isOrien.Checked))
+                    using (var frm = new CustomDialog(matrix, PointinList(obj).cnt, list.Count, is_oriented))
                     {
                         frm.ShowDialog();
                     }
-                    //d.ShowDialog();
+
+                    Refresh();
+                    draw_tree();
                 }
             }
             else if (e.Button == MouseButtons.Right)
             {
-                //AllocConsole();
-                if (inList(obj.point.X, obj.point.Y) && checkBox1.Checked != true && checkBox2.Checked != true)
+                if (inList(obj.point.X, obj.point.Y) && check_del_ver != true && check_del_edge != true)
                 {
                     if (cnt_ver == 0)
                     {
@@ -179,24 +194,20 @@ namespace graphss
                         a = PointinList(obj);
                         a.cnt = PointinList(obj).cnt;
                         matrix[vertex_first.cnt, a.cnt + 1] = 1;
-                        if (!isOrien.Checked)
+                        if (!is_oriented)
                             matrix[a.cnt, vertex_first.cnt + 1] = 1;
                         draw_edge(vertex_first, a, matrix[vertex_first.cnt, a.cnt + 1]);
-                        //output();
+
                         cnt_ver = 0;
                     }
-
-
-                    //Console.WriteLine(vertex_first.point.X + " " + vertex_first.point.Y);
                 }
-                else if (!inList(obj.point.X, obj.point.Y) && checkBox1.Checked != true && checkBox2.Checked != true)
+                else if (!inList(obj.point.X, obj.point.Y) && check_del_ver != true && check_del_edge != true)
                 {
                     pos tmp = new pos();
                     vertex_first = tmp;
-                    //Console.WriteLine(vertex_first.point.X + " " + vertex_first.point.Y);
                     cnt_ver = 0;
                 }
-                else if (inList(obj.point.X, obj.point.Y) && checkBox1.Checked == true && checkBox2.Checked != true)
+                else if (inList(obj.point.X, obj.point.Y) && check_del_ver == true && check_del_edge != true)
                 {
                     pos indexs = list[posInList(e.X, e.Y)];
                     trans_ver(indexs);
@@ -205,7 +216,7 @@ namespace graphss
                     Refresh();
                     draw_tree();
                 }
-                else if (inList(obj.point.X, obj.point.Y) && checkBox1.Checked != true && checkBox2.Checked == true)
+                else if (inList(obj.point.X, obj.point.Y) && check_del_ver != true && check_del_edge == true)
                 {
                     if (cnt_ver_remove == 0)
                     {
@@ -218,11 +229,10 @@ namespace graphss
                         a = PointinList(obj);
                         a.cnt = PointinList(obj).cnt;
                         matrix[vertex_first.cnt, a.cnt + 1] = 0;
-                        if (!isOrien.Checked)
+                        if (!is_oriented)
                             matrix[a.cnt, vertex_first.cnt + 1] = 0;
                         Refresh();
                         draw_tree();
-                        //output();
                         cnt_ver_remove = 0;
                     }
                 }
@@ -232,7 +242,6 @@ namespace graphss
                     vertex_first = tmp;
                 }
             }
-
         }
 
         public void WriteToFile(List<pos> list)
@@ -342,13 +351,13 @@ namespace graphss
             }
         }
 
-        private void output(int[,] arr)
+        private void output(int[,] arr_ms)
         {
             AllocConsole();
             for (int i = 0; i < list.Count; ++i)
             {
                 for (int j = 0; j <= list.Count; ++j)
-                    Console.Write(arr[i, j] + " ");
+                    Console.Write(arr_ms[i, j] + " ");
                 Console.WriteLine();
             }
             Console.WriteLine();
@@ -400,17 +409,16 @@ namespace graphss
             draw_tree();
         }
 
-        public void clear_matrix(int[,] matrix)
+        public void clear_matrix(int[,] mas)
         {
             for (int i = 0; i <= list.Count; i++)
             {
                 for (int j = 0; j <= list.Count; j++)
                 {
-                    matrix[i, j] = 0;
+                    mas[i, j] = 0;
                 }
             }
         }
-
 
         private void remove_edge(pos vertex) {
             for (int i = 1; i < list.Count + 1; i++)
@@ -542,10 +550,10 @@ namespace graphss
             var fontFamily = new FontFamily("Times New Roman");
             var font = new Font(fontFamily, 32, FontStyle.Regular, GraphicsUnit.Pixel);
 
-            if (!isOrien.Checked)
-                myPen.CustomEndCap = new AdjustableArrowCap(5, 5);
+            if (!is_oriented)
+                myPen.CustomEndCap = new AdjustableArrowCap(7, 7);
 
-            myPen.CustomStartCap = new AdjustableArrowCap(5, 5);
+            myPen.CustomStartCap = new AdjustableArrowCap(7, 7);
             myPen.Width = 2;
 
             point1.point.X += radius / 2;
@@ -555,51 +563,15 @@ namespace graphss
             point2.point.Y += radius / 2;
 
             myGraphics.DrawLine(myPen, point1.point, point2.point);
-            if (isWeighted.Checked)
+            if (is_weight)
             {
                 myGraphics.DrawString(mass + "", font, mySolidBrush, new PointF((point1.point.X + point2.point.X) / 2, (point1.point.Y + point2.point.Y) / 2));
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            /*int n;
-            if (int.TryParse(theText, out n))
-            {
-                radius = n;
-                Refresh();
-                draw_tree();
-            }*/
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            Refresh();
-            draw_tree();
-        }
-
-        private void isWeighted_Click(object sender, EventArgs e)
-        {
-            Refresh();
-            draw_tree();
-        }
-
-        private void isOrien_Click(object sender, EventArgs e)
-        {
-            clear_matrix(matrix);
-            Refresh();
-            draw_tree();
-        }
-
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
             position = -1;
-        }
-
-        private void textBox1_KeyUp(object sender, KeyEventArgs e)
-        {
-            TextBox objTextBox = (TextBox)sender;
-            theText = objTextBox.Text;
         }
 
         private void vertexToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -624,6 +596,7 @@ namespace graphss
         {
             WriteToFile(list);
             WriteToFileMas(matrix);
+            previousMenuItem.Enabled = true;
         }
 
         private void previousToolStripMenuItem_Click(object sender, EventArgs e)
@@ -644,13 +617,155 @@ namespace graphss
             draw_tree();
         }
 
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            clear_matrix(matrix);
+            list = new List<pos>();
+            Refresh();
+        }
+
+        private void deleteverToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            deleteverMenuItem.Checked = !deleteverMenuItem.Checked;
+            check_del_ver = deleteverMenuItem.Checked;
+        }
+
+        private void deleteedgeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            deleteedgMenuItem.Checked = !deleteedgMenuItem.Checked;
+            check_del_edge = deleteedgMenuItem.Checked;
+        }
+
+        private void orientedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            orientedMenuItem.Checked = !orientedMenuItem.Checked;
+            is_oriented = orientedMenuItem.Checked;
+            clear_matrix(matrix);
+            Refresh();
+            draw_tree();
+        }
+
+        private void weightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            weightMenuItem.Checked = !weightMenuItem.Checked;   
+            is_weight = weightMenuItem.Checked;
+            Refresh();
+            draw_tree();
+        }
+
+        private void dfsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            visited_ver = new List<int>();
+            stack_ver = new Stack<int>();
+            using (var frm2 = new DfsStart(list.Count))
+            {
+                frm2.ShowDialog();
+            }
+
+            dfs(index_ver_st);
+
+            t = new Timer();
+            counter = 0;
+            t.Interval = 750;
+            t.Tick += new EventHandler(timer1_Tick);
+            t.Start();
+        }
+
+        private void appropriation_arr(int[,] arr, int[,] mas)
+        {
+            for (int i = 0; i < list.Count; i++) {
+                for (int j = 0; j <= list.Count; j++)
+                {
+                    mas[i, j] = arr[i, j];
+                }
+            }
+        }
+
+        private bool is_conected_ver(int num, int[,] arr)
+        {
+            for (int i = 1; i <= list.Count; ++i)
+                if (arr[num, i] != 0) return true;
+            return false;
+        }
+
+        private void euler_path(int number, int[,] arr)
+        {
+            int cnt = 0;
+            ver_path.Push(number);
+
+            for (int j = 1; j <= list.Count(); j++)
+            {
+                if (arr[number, j] >= 1)
+                {
+                    arr[number, j] = 0;
+                    arr[j - 1, number + 1] = 0;
+                    euler_path(j - 1, arr);
+                }
+            }
+
+            ans_path.Add(ver_path.Peek());
+            ver_path.Pop();
+        }
+
+        private int find_ver_odd()
+        {
+            int cnt = 0;
+            List<int> temp = new List<int>();
+            for (int i = 0; i < list.Count(); i++)
+            {
+                int count_pair = 0;
+                for (int j = 0; j < list.Count(); j++)
+                    if (matrix[i, j + 1] >= 1)
+                        count_pair++;
+                if (count_pair % 2 != 0)
+                {
+                    cnt++;
+                    temp.Add(i);
+                }
+            }
+
+            if (cnt == 2) return temp[0];
+            else if (cnt == 0) return 0;
+            return -1;
+        }
+
+        private void eulerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int[,] tmp_matrix = new int[100, 100];
+
+            appropriation_arr(matrix, tmp_matrix);
+
+            ver_path = new Stack<int>();
+            ans_path = new List<int>();
+
+            temp_color_ver = color_ver;
+            temp_color_edges = color_edges;
+
+            int numbers = find_ver_odd();
+            if (numbers > -1)
+                euler_path(numbers, tmp_matrix);
+
+            /*AllocConsole();
+            Console.WriteLine(ans_path.Count);
+            for (int i = 0; i < ans_path.Count; i++)
+            {
+                Console.Write(ans_path[i] + 1 + " ");
+            }*/
+
+            t = new Timer();
+            count_edge = 0;
+            t.Interval = 750;
+            t.Tick += new EventHandler(timer2_Tick);
+            t.Start();
+        }
+
         private void draw_tree()
         {
             for (int i = 0; i < list.Count(); i++)
             {
                 draw_vertex(list[i].point.X, list[i].point.Y, list[i].cnt + 1);
             }
-            if (isOrien.Checked)
+            if (is_oriented)
             {
                 for (int i = 0; i < list.Count(); i++)
                 {
@@ -690,4 +805,20 @@ namespace graphss
             cnt = 0;
         }
     }
+
+    public class Vertex
+    {
+        public Vertex() { }
+        public Vertex(int start_in)
+        {
+            this.start = start_in;
+        }
+
+        public int start
+        {
+            get;
+            set;
+        }
+    }
+    
 }

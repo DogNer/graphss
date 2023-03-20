@@ -39,7 +39,6 @@ namespace graphss
             cnt = n;
             lenght= len_mas;
             isOriented = isOrie;
-            
         }
 
         public CustomDialog() { }
@@ -59,7 +58,7 @@ namespace graphss
 
                     TextBox tmpBox = new TextBox();
                     tmpBox.Location = new Point(60, 30 * count_ver + 5);
-                    tmpBox.Text = "1";
+                    tmpBox.Text = vertex[cnt, i].ToString();
                     tmpBox.Width = 100;
                     tmpBox.Height= 20;
                     tmpBox.Name = i + "";
